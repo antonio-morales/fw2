@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+import json
+import sys
+
+import png
+
+
+def info_json_out(out, inp):
+    """To the writable file `out` write a JSON record for
+    each image found on the readable file `inp`.
+    """
+    while True:
+        r = png.Reader(file=inp)
+        try:
+            w, h, rows, info = r.read()
+        except EOFError:
+            break
+
+        list(rows)
+
+        json.dump(info, sys.stdout, sort_keys=True, indent="  ")
+        sys.stdout.write("\n")
+
+
+def main(argv=None):
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "input", nargs="?", default="-", type=png.cli_open, metavar="PNG"
+    )
+    args = parser.parse_args()
+    return info_json_out(sys.stdout, args.input)
+
+
+if __name__ == "__main__":
+    main()
