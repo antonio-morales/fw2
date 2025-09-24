@@ -7,8 +7,10 @@
     }
   },
 
-  "onCreateCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-21-jdk && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*",
-  "postCreateCommand": "bash -lc 'java -version && javac -version && node -v && npm -v'",
+  "onCreateCommand": "bash -lc 'sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-21-jdk curl ca-certificates && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* && curl -LsSf https://astral.sh/uv/install.sh | sh && export PATH=$PATH:/home/vscode/.local/bin && uv tool update-shell && uv python install 3.11'",
+
+  "postCreateCommand": "bash -lc 'export PATH=/home/vscode/.local/bin:$PATH && java -version && javac -version && node -v && npm -v && uv --version && uv python list && python3.11 -V'",
+
 
   "containerEnv": {
     "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64",
