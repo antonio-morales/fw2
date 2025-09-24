@@ -1,8 +1,13 @@
 {
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
-  
-  "onCreateCommand": "bash -lc 'sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-21-jdk && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* && curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source /home/vscode/.nvm/nvm.sh && nvm install 18.19.1 && nvm alias default 18.19.1'",
 
+    "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18.19.1"
+    }
+  },
+
+  "onCreateCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-21-jdk && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*",
   "postCreateCommand": "bash -lc 'java -version && javac -version && node -v && npm -v'",
 
   "containerEnv": {
