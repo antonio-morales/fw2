@@ -16,7 +16,5 @@
     "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64",
     "NVM_DIR": "/home/vscode/.nvm"
   },
-  "containerEnv": {
-    "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64"
-  }
+
 }
