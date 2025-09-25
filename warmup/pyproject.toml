@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "warmup-fuzz"
+version = "0.1.0"
+description = "Concurrent fuzz tool for localhost:80 (10 TCP random writers, 10 HTTPX requests)"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [
+  { name = "Your Name" }
+]
+keywords = ["fuzz", "http", "tcp", "asyncio", "httpx"]
+dependencies = [
+  "httpx>=0.27,<1",
+]
+
+[project.urls]
+Homepage = "https://example.com"
+Repository = "https://example.com/repo"
+
+[project.scripts]
+fuzz = "warmup_fuzz.cli:main"
+
+
