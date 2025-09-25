@@ -1,4 +1,6 @@
 import java.io.StringReader;
+import java.net.URLConnection;
+import java.util.Random;
 
 public class fuzzer {
     
@@ -9,9 +11,12 @@ public class fuzzer {
         
         try {
         
-          BookingForm.parseBooking(s);
-          
-        } catch (ArrayIndexOutOfBoundsException e) {
+          byte[] bytes = new byte[2024];
+          URLConnection connection = new URLConnection("http://localhost:8080")
+          connection.connect();
+          new Random().nextBytes(bytes);
+          connection.getOutputStream().write(bytes);
+
         
           throw e;
         
