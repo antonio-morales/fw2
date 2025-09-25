@@ -119,10 +119,6 @@ func randomHeaders() http.Header {
 }
 
 func main() {
-	// Create a new random source and generator
-	randSource := mrand.NewSource(time.Now().UnixNano())
-	randGen := mrand.New(randSource)
-
 	// Define the target URL
 	targetURL := "http://localhost:80"
 
