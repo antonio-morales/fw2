@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:fuzzer}",
+            "name": "Debug fuzzer",
+            "program": "${workspaceFolder:fuzzer}/.build/debug/fuzzer",
+            "preLaunchTask": "swift: Build Debug fuzzer"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:fuzzer}",
+            "name": "Release fuzzer",
+            "program": "${workspaceFolder:fuzzer}/.build/release/fuzzer",
+            "preLaunchTask": "swift: Build Release fuzzer"
+        }
+    ]
+}
