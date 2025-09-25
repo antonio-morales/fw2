@@ -1,1 +1,9 @@
 All the submitted solutions are in this folder
+
+```bash
+sudo apt install -y python3-pip python3-venv build-essential python3-dev
+python3 -m venv venv
+source venv/bin/activate
+pip install requests
+python3 http_fuzzer.py
+```
