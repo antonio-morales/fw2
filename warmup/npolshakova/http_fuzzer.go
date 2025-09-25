@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -118,8 +119,10 @@ func randomHeaders() http.Header {
 }
 
 func main() {
-	// Define the target URL
-	targetURL := "http://localhost:80"
+	// Define command-line flags
+	targetURL := flag.String("url", "http://localhost:80", "Target URL to fuzz")
+	concurrency := flag.Int("concurrency", 10, "Number of concurrent requests")
+	flag.Parse()
 
 	// Create a context that we can cancel
 	ctx, cancel := context.WithCancel(context.Background())
@@ -136,7 +139,7 @@ func main() {
 
 	// Start fuzzing
 	var wg sync.WaitGroup
-	for i := 0; i < 10; i++ { // Start 10 goroutines for concurrent requests
+	for i := 0; i < *concurrency; i++ { // Use concurrency flag
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -152,7 +155,7 @@ func main() {
 					body := randomBody()
 
 					// Construct the full URL
-					fullURL := fmt.Sprintf("%s%s?%s", targetURL, path, query)
+					fullURL := fmt.Sprintf("%s%s?%s", *targetURL, path, query)
 
 					// Create a new HTTP request
 					req, err := http.NewRequest(method, fullURL, strings.NewReader(body))
