@@ -12,7 +12,6 @@ import (
 	"strings"
 	"sync"
 	"syscall"
-	"time"
 
 	"crypto/rand"
 	"math/big"
