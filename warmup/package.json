@@ -7,6 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "fuzz": "node fuzzer.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
