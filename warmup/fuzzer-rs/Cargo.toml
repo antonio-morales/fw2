@@ -1,0 +1,15 @@
+[package]
+name = "fuzzer-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+futures = "0.3"
+
+[profile.release]
+lto = true
+codegen-units = 1
