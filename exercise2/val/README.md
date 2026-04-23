@@ -1,56 +1,52 @@
-# exercise 2 — findings
+# exercise 2
 
-found a ReDoS in `moment().format()` via the `MONTHS_IN_FORMAT` regex when
-the locale has separate `format`/`standalone` months (like `be`).
+ReDoS in moment 2.15.1 when you call format() under a locale that has
+separate format/standalone months. 'be' (belarusian) is one of those.
 
-## root cause
-
-`moment.js` line 833:
+the regex is in moment.js line 833:
 
 ```js
 MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/;
 ```
 
-when the format string contains `MMM` or `MMMM`, moment calls
-`locale.months(m, format)` → `MONTHS_IN_FORMAT.test(format)` on the full
-format string.
+whenever the format string has MMM or MMMM, moment calls
+`locale.months(m, format)` which runs this regex against the whole format
+string to decide whether to use the format or standalone month list.
 
-the `(\[[^\[\]]*\]|\s+)+` group matches either a bracketed literal or
-whitespace. if the format has a `D`, a run of spaces after it, and no `MMM`
-to satisfy the trailing `MMMM?`, the regex engine tries every partition of
-those spaces across the `+` quantifier. that's **2^N** attempts before it
-gives up — catastrophic backtracking.
+the `(\[[^\[\]]*\]|\s+)+` part is the problem. if the format has a D, then
+a bunch of spaces, and no MMM/MMMM after those spaces, the engine tries
+every way to split the spaces between the `+` repetitions before finally
+giving up. classic catastrophic backtracking.
 
 ## repro
 
 ```js
 const moment = require('moment');
 moment.locale('be');
-moment().format('MMMMD' + ' '.repeat(32));
+moment().format('MMMMD' + ' '.repeat(34));
 ```
 
-measured locally (moment 2.15.1, node 18.19.1 as pinned by the workshop):
+on node 18.19.1 / moment 2.15.1:
 
-| whitespace run | time      |
-| -------------- | --------- |
-| 25             |    242 ms |
-| 28             |    382 ms |
-| 30             |   1533 ms |
-| 32             |   6134 ms |
-| 34             |  24808 ms |
+```
+25 spaces ->   242 ms
+28 spaces ->   382 ms
+30 spaces ->  1533 ms
+32 spaces ->  6134 ms
+34 spaces -> 24808 ms
+```
 
-doubles roughly every +1 space. extending to 40+ spaces pins a single CPU
-for minutes — a ReDoS.
+doubles every extra space. 40+ spaces hangs for minutes.
 
-## why the locale matters
+## why locale matters
 
-if `moment.locale(...)` is left at `en`, `this._months` is an array, so the
-shortcut path in `localeMonths` fires and `MONTHS_IN_FORMAT` is never
-tested. `be` (and any locale with format/standalone split) exposes it.
+under `en`, `this._months` is a plain array so the shortcut in localeMonths
+returns early and the regex never runs. locales like `be` have a
+`{format, standalone}` object, which is what makes MONTHS_IN_FORMAT get
+tested.
 
 ## fix idea
 
-replace `(\[[^\[\]]*\]|\s+)+` with two non-overlapping classes that can't
-backtrack into each other, e.g. `(?:\[[^\[\]]*\]|\s)+` (single-char
-whitespace with no inner `+`). this was addressed upstream in later
-moment releases.
+rewrite the inner group so the two branches don't overlap. e.g. replace
+`(\[[^\[\]]*\]|\s+)+` with `(?:\[[^\[\]]*\]|\s)+` so whitespace only
+matches one char per repetition and there's nothing to backtrack.
