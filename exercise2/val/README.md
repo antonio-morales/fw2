@@ -29,14 +29,15 @@ moment.locale('be');
 moment().format('MMMMD' + ' '.repeat(32));
 ```
 
-measured locally (moment 2.15.1, node 24):
+measured locally (moment 2.15.1, node 18.19.1 as pinned by the workshop):
 
-| whitespace run | time     |
-| -------------- | -------- |
-| 25             |    50 ms |
-| 28             |   402 ms |
-| 30             |  1602 ms |
-| 32             |  6423 ms |
+| whitespace run | time      |
+| -------------- | --------- |
+| 25             |    242 ms |
+| 28             |    382 ms |
+| 30             |   1533 ms |
+| 32             |   6134 ms |
+| 34             |  24808 ms |
 
 doubles roughly every +1 space. extending to 40+ spaces pins a single CPU
 for minutes — a ReDoS.
