@@ -1,0 +1,16 @@
+{
+  "name": "warmup",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "fuzz": "node fuzzer.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "lib0": "^0.2.117"
+  }
+}
