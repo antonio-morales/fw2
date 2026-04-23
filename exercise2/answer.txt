@@ -1,0 +1,25 @@
+aclark4life ➜ /workspaces/fw4/exercise2 (main) $ npx jazzer fuzzer --sync
+INFO: Using generated seed: 341029387
+WARN: [jazzer.js] ES module instrumentation requires Node.js >= 20.6 (current: 18.19.1). ES modules (import/import()) will not be instrumented.
+Dictionary: 4 entries
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 341029387
+INFO: Loaded 1 modules   (512 inline 8-bit counters): 512 [0x7c0e7be40010, 0x7c0e7be40210), 
+INFO: Loaded 1 PC tables (512 PCs): 512 [0x7c0e9017ab40,0x7c0e9017cb40), 
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2      INITED cov: 3 ft: 3 corp: 1/1b exec/s: 0 rss: 138Mb
+#65536  pulse  cov: 3 ft: 3 corp: 1/1b lim: 652 exec/s: 32768 rss: 166Mb
+#131072 pulse  cov: 3 ft: 3 corp: 1/1b lim: 1300 exec/s: 26214 rss: 171Mb
+#262144 pulse  cov: 3 ft: 3 corp: 1/1b lim: 2611 exec/s: 23831 rss: 203Mb
+#524288 pulse  cov: 3 ft: 3 corp: 1/1b lim: 4096 exec/s: 23831 rss: 277Mb
+ALARM: working on the last Unit for 6 seconds
+       and the timeout value is 5 (use -timeout=N to change)
+MS: 4 InsertRepeatedBytes-ChangeBinInt-InsertRepeatedBytes-InsertRepeatedBytes-; base unit: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+0xa,0x20,0x4d,0x4d,0x4d,0x4d,0x4d,0x4d,0x4d,0x4d,0x4d,0x4d,0x20,0x20,0x20,0x44,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x0,0x0,0x0,
+\012 MMMMMMMMMM   D                                                              \000\000\000
+artifact_prefix='./'; Test unit written to ./timeout-0ddb1b362c4802eab0e11d837b6082bce4d74676
+Base64: CiBNTU1NTU1NTU1NICAgRCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgAAAA
+==20914== ERROR: libFuzzer: timeout after 6 seconds
+SUMMARY: libFuzzer: timeout
+@aclark4life ➜ /workspaces/fw4/exercise2 (main) $ 
