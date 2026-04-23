@@ -1,53 +1,44 @@
-# exercise 1 — findings
+# exercise 1
 
-found an `ArrayIndexOutOfBoundsException` in `BookingForm.parseDate` when the
-departure date uses the text pattern (`Month DD YYYY`) and the month name
-doesn't match any entry in the `months` array.
-
-## root cause
-
-`BookingForm.java` line ~140:
+found a crash in BookingForm.parseDate. the months array has a typo:
 
 ```java
 String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept, Oct", "Nov", "Dec" };
 ```
 
-there's a typo — `"Sept, Oct"` is one string instead of two, so the array has
-**11** elements, not 12. but the lookup loop iterates `i < 12`:
+"Sept, Oct" is one string (quoted together), so the array only has 11
+elements instead of 12. the loop right below it iterates `i < 12`:
 
 ```java
 for (int i = 0; i < 12; i++) {
-  if (monthName.equalsIgnoreCase(months[i])) { ... break; }
+  if (monthName.equalsIgnoreCase(months[i])) { ... }
 }
 ```
 
-if the month name doesn't match anything, `i` reaches 11 and `months[11]`
-throws `ArrayIndexOutOfBoundsException: Index 11 out of bounds for length 11`.
+any month name that isn't in the list makes the loop reach i=11 and throw
+ArrayIndexOutOfBoundsException.
 
 ## repro
-
-```bash
-cd exercise1
-javac BookingForm.java fuzzer.java
-java -cp jazzer/jazzer_standalone.jar:. com.code_intelligence.jazzer.Jazzer \
-  --target_class=fuzzer corpus val/
-```
-
-the file `val/crash_input.txt` triggers the crash on first run.
-
-content:
 
 ```
 A;B;a@b.c;single;1;2025-01-01T00:00;Sep 5 2025;false;
 ```
 
-the departure field `Sep 5 2025` matches the text regex but "Sep" isn't in
-the months array (only "Sept, Oct" is) so the loop walks off the end.
+confirmed by compiling BookingForm.java and calling parseBooking with that
+string:
 
-## fix suggestion
+```
+java.lang.ArrayIndexOutOfBoundsException: Index 11 out of bounds for length 11
+```
+
+crash input is in crash_input.txt. dict.txt has month names + the separator
+chars for speeding up jazzer runs.
+
+## fix
+
+split the merged string and use months.length:
 
 ```java
 String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+for (int i = 0; i < months.length; i++) { ... }
 ```
-
-also worth bounding the loop to `months.length` rather than the magic `12`.
