@@ -24,7 +24,7 @@ raises `IndexError: bytearray index out of range`.
 `IndexError` is not in the harness' caught list, so it propagates to
 libfuzzer and the fuzzer reports a crash.
 
-## smallest poc (65 bytes): `poc.png`
+## smallest poc (65 bytes): `poc.bin`
 
 - signature
 - `IHDR`: width=2, height=2, bitdepth=8, colour=0 (greyscale), interlace=1
@@ -54,7 +54,7 @@ also confirmed against upstream pypng `0.0.21` — same crash, so this
 is a real bug in the library, not an artefact of the workshop's
 modifications.
 
-## secondary finding: oom via huge interlaced dimensions (`poc_oom.png`)
+## secondary finding: oom via huge interlaced dimensions (`poc_oom.bin`)
 
 `_deinterlace` pre-allocates the full output buffer before it reads
 any data:
@@ -70,7 +70,7 @@ else:
 an `IHDR` with width 32, height ~16.7 million, bitdepth 16, rgb,
 interlace 1 asks for ~3 gb before any validation — libfuzzer flags
 it as oom. atheris found this one on its own during a 3-minute run
-with the pngsuite seed corpus + chunk-type dictionary; `poc_oom.png`
+with the pngsuite seed corpus + chunk-type dictionary; `poc_oom.bin`
 is the artefact it wrote.
 
 ## note: the `IFUZZ` trap is dead code
@@ -91,8 +91,10 @@ fuzzer still finds a real bug above.
 
 ## files
 
-- `poc.png` — 65 bytes, triggers the primary `IndexError`
-- `poc_oom.png` — 595 bytes, triggers the memory blow-up (this is the
+- `poc.bin` — 65 bytes, triggers the primary `IndexError` (malformed
+  png payload; `.bin` extension avoids github rendering a broken-image
+  preview)
+- `poc_oom.bin` — 595 bytes, triggers the memory blow-up (this is the
   artifact libfuzzer wrote during the run)
 - `png.dict` — libfuzzer dictionary of png chunk type tokens used
   during the run
@@ -109,8 +111,8 @@ uv pip install atheris beautifulsoup4 html5lib
 #  CLANG_BIN=/opt/homebrew/opt/llvm/bin/clang before pip install)
 
 cd code
-python fuzzer.py ../../val/poc.png        # primary: IndexError
-python fuzzer.py ../../val/poc_oom.png    # secondary: OOM
+python fuzzer.py ../../val/poc.bin        # primary: IndexError
+python fuzzer.py ../../val/poc_oom.bin    # secondary: OOM
 ```
 
 to repro the organic find, extract the pngsuite images as a seed
